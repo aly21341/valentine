@@ -18,55 +18,55 @@
         }
         .container {
             background: white;
-            padding: 50px;
+            padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
             z-index: 10;
+            max-width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        h1 { color: #d63384; font-size: 2.5rem; }
-        .buttons { margin-top: 30px; }
+        h1 { color: #d63384; font-size: 2rem; margin: 10px 0; }
+        .buttons { margin-top: 20px; }
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 15px 25px;
+            font-size: 1.1rem;
             border: none;
             border-radius: 10px;
             cursor: pointer;
             transition: 0.3s;
-            margin: 0 10px;
+            margin: 5px;
         }
         #yesBtn { background-color: #ff4d6d; color: white; }
         #noBtn { background-color: #8a8a8a; color: white; }
         
         #message {
-            margin-top: 25px;
-            font-size: 1.5rem;
+            margin-top: 20px;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #d63384;
             min-height: 40px;
-            /* Tranziție fină pentru creșterea textului */
             transition: font-size 0.2s ease-in-out; 
             word-wrap: break-word;
+            max-width: 100%;
         }
 
+        /* GIF-urile - Aranjate sus și jos */
         .bg-gif {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 250px;
-            z-index: 15;
+            width: 150px; /* Dimensiune mai mică pentru mobil */
+            height: auto;
             display: none;
+            margin: 10px 0;
         }
-        #gif-stanga { left: 5%; }
-        #gif-dreapta { right: 5%; }
     </style>
 </head>
 <body>
 
-    <img src="cat.gif" id="gif-stanga" class="bg-gif">
-    <img src="cat-heart.gif" id="gif-dreapta" class="bg-gif">
-
     <div class="container">
+        <img src="cat.gif" id="gif-sus" class="bg-gif">
+
         <div id="main-content">
             <h1>Vrei să fii Valentine-ul meu? ❤️</h1>
             <div class="buttons">
@@ -74,22 +74,26 @@
                 <button id="noBtn" onclick="raspunsNu()">NU</button>
             </div>
         </div>
+
         <div id="message"></div>
+
+        <img src="cat-heart.gif" id="gif-jos" class="bg-gif">
     </div>
 
     <script>
         let contorNu = 0;
-        let messageFontSize = 1.5; // Dimensiunea inițială în rem
+        let messageFontSize = 1.3;
 
         function raspunsDa() {
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
             let msg = document.getElementById('message');
             msg.innerText = "14.02.2026 ora 19:00 să fii la poartă!";
             msg.style.color = "#d63384";
-            msg.style.fontSize = "1.5rem"; // Resetăm dimensiunea la DA
+            msg.style.fontSize = "1.3rem";
 
-            document.getElementById('gif-stanga').style.display = "block";
-            document.getElementById('gif-dreapta').style.display = "block";
+            // Afișăm GIF-urile (unul sus, unul jos în interiorul containerului)
+            document.getElementById('gif-sus').style.display = "block";
+            document.getElementById('gif-jos').style.display = "block";
             document.body.style.backgroundColor = "#ffb6c1";
         }
 
@@ -101,19 +105,16 @@
                 msg.innerText = "Răspuns greșit! ❌ Încearcă din nou.";
                 msg.style.color = "red";
             } else {
-                // De la a doua apăsare, textul devine PA! și începe să crească
                 msg.innerText = "PA!!!";
                 msg.style.color = "red";
                 
-                // Creștem dimensiunea textului din mesaj
-                messageFontSize += 2; 
+                messageFontSize += 1.5; 
                 msg.style.fontSize = messageFontSize + "rem";
                 
-                // Micșorăm butonul de NU
                 let noBtn = document.getElementById('noBtn');
                 let currentBtnSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-                if (currentBtnSize > 2) {
-                    noBtn.style.fontSize = (currentBtnSize - 3) + "px";
+                if (currentBtnSize > 4) {
+                    noBtn.style.fontSize = (currentBtnSize - 2) + "px";
                     noBtn.style.padding = (currentBtnSize / 2) + "px";
                 }
             }
