@@ -14,12 +14,16 @@
             background-color: #ffdae0;
             font-family: 'Arial', sans-serif;
             text-align: center;
+            overflow: hidden;
+            transition: background 0.5s;
         }
         .container {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             padding: 50px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 10;
         }
         h1 { color: #d63384; font-size: 2.5rem; }
         .buttons { margin-top: 30px; }
@@ -34,6 +38,7 @@
         }
         #yesBtn { background-color: #ff4d6d; color: white; }
         #noBtn { background-color: #8a8a8a; color: white; }
+        
         #message {
             margin-top: 25px;
             font-size: 1.5rem;
@@ -41,11 +46,41 @@
             color: #d63384;
             min-height: 40px;
         }
+
+        /* Stil pentru GIF-urile de fundal */
+        .bg-gif {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px; /* Ajustează dimensiunea cum dorești */
+            z-index: 1;
+            display: none;
+        }
+        #gif-stanga { left: 5%; }
+        #gif-dreapta { right: 5%; }
+
+        /* Stil pentru textul PA uriaș */
+        #pa-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 0, 0, 0.2);
+            font-weight: black;
+            z-index: 0;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <img src="cat.gif" id="gif-stanga" class="bg-gif">
+    <img src="cat-heart.gif" id="gif-dreapta" class="bg-gif">
+
+    <div id="pa-overlay"></div>
+
+    <div class="container" id="container-box">
         <div id="main-content">
             <h1>Vrei să fii Valentine-ul meu? ❤️</h1>
             <div class="buttons">
@@ -57,22 +92,48 @@
     </div>
 
     <script>
+        let contorNu = 0;
+        let paSize = 50;
+
         function raspunsDa() {
+            // Ascundem elementele vechi și afișăm mesajul de succes
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
-            document.getElementById('message').innerText = "14.02.2026 ora 19:00 să fii la poarta";
+            document.getElementById('message').innerText = "14.02.2026 ora 19:00 să fii la poartă!";
+            document.getElementById('pa-overlay').innerText = ""; // Ștergem "PA"-ul dacă exista
+
+            // Afișăm GIF-urile
+            document.getElementById('gif-stanga').style.display = "block";
+            document.getElementById('gif-dreapta').style.display = "block";
+            
+            // Schimbăm fundalul pentru un efect mai festiv
+            document.body.style.backgroundColor = "#ffb6c1";
         }
 
         function raspunsNu() {
+            contorNu++;
             let msg = document.getElementById('message');
-            msg.innerText = "Răspuns greșit! ❌ Încearcă din nou.";
-            msg.style.color = "red";
-            
-            // Efect opțional: facem butonul de NU să se micșoreze
-            let noBtn = document.getElementById('noBtn');
-            let currentSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-            if (currentSize > 5) {
-                noBtn.style.fontSize = (currentSize - 2) + "px";
-                noBtn.style.padding = (currentSize - 5) + "px";
+            let paOverlay = document.getElementById('pa-overlay');
+
+            if (contorNu === 1) {
+                // Prima apăsare
+                msg.innerText = "Răspuns greșit! ❌ Încearcă din nou.";
+                msg.style.color = "red";
+            } else {
+                // De la a doua apăsare în sus
+                msg.innerText = "Ai apăsat NU de " + contorNu + " ori...";
+                
+                // Apare și crește "PA"
+                paOverlay.innerText = "PA";
+                paSize += 100; // Crește cu 100px la fiecare click
+                paOverlay.style.fontSize = paSize + "px";
+                
+                // Micșorăm butonul de NU ca să fie mai greu de apăsat
+                let noBtn = document.getElementById('noBtn');
+                let currentSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
+                if (currentSize > 5) {
+                    noBtn.style.fontSize = (currentSize - 2) + "px";
+                    noBtn.style.padding = (currentSize / 2) + "px";
+                }
             }
         }
     </script>
