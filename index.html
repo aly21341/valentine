@@ -15,15 +15,14 @@
             font-family: 'Arial', sans-serif;
             text-align: center;
             overflow: hidden;
-            transition: background 0.5s;
         }
         .container {
-            background: rgba(255, 255, 255, 0.9);
+            background: white;
             padding: 50px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 10;
+            z-index: 10; /* Containerul stă deasupra textului PA */
         }
         h1 { color: #d63384; font-size: 2.5rem; }
         .buttons { margin-top: 30px; }
@@ -47,29 +46,31 @@
             min-height: 40px;
         }
 
-        /* Stil pentru GIF-urile de fundal */
+        /* GIF-urile de final */
         .bg-gif {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
-            width: 300px; /* Ajustează dimensiunea cum dorești */
-            z-index: 1;
+            width: 250px;
+            z-index: 15; /* GIF-urile apar peste tot la final */
             display: none;
         }
         #gif-stanga { left: 5%; }
         #gif-dreapta { right: 5%; }
 
-        /* Stil pentru textul PA uriaș */
+        /* Stil pentru PA - Acum mult mai vizibil */
         #pa-overlay {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: rgba(255, 0, 0, 0.2);
-            font-weight: black;
-            z-index: 0;
+            color: #ff0000; /* Roșu aprins */
+            font-weight: 900;
+            z-index: 1; /* Stă în spatele cutiei albe, dar peste fundalul roz */
             pointer-events: none;
             text-transform: uppercase;
+            opacity: 0.8;
+            line-height: 1;
         }
     </style>
 </head>
@@ -80,7 +81,7 @@
 
     <div id="pa-overlay"></div>
 
-    <div class="container" id="container-box">
+    <div class="container">
         <div id="main-content">
             <h1>Vrei să fii Valentine-ul meu? ❤️</h1>
             <div class="buttons">
@@ -93,19 +94,16 @@
 
     <script>
         let contorNu = 0;
-        let paSize = 50;
+        let paSize = 150; // Începe direct de la o dimensiune mare
 
         function raspunsDa() {
-            // Ascundem elementele vechi și afișăm mesajul de succes
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
             document.getElementById('message').innerText = "14.02.2026 ora 19:00 să fii la poartă!";
-            document.getElementById('pa-overlay').innerText = ""; // Ștergem "PA"-ul dacă exista
+            document.getElementById('message').style.color = "#d63384";
+            document.getElementById('pa-overlay').innerText = ""; 
 
-            // Afișăm GIF-urile
             document.getElementById('gif-stanga').style.display = "block";
             document.getElementById('gif-dreapta').style.display = "block";
-            
-            // Schimbăm fundalul pentru un efect mai festiv
             document.body.style.backgroundColor = "#ffb6c1";
         }
 
@@ -115,23 +113,22 @@
             let paOverlay = document.getElementById('pa-overlay');
 
             if (contorNu === 1) {
-                // Prima apăsare
                 msg.innerText = "Răspuns greșit! ❌ Încearcă din nou.";
                 msg.style.color = "red";
             } else {
-                // De la a doua apăsare în sus
-                msg.innerText = "Ai apăsat NU de " + contorNu + " ori...";
-                
-                // Apare și crește "PA"
+                // De la a doua apăsare
+                msg.innerText = "AM ZIS PA! ";
                 paOverlay.innerText = "PA";
-                paSize += 100; // Crește cu 100px la fiecare click
                 paOverlay.style.fontSize = paSize + "px";
                 
-                // Micșorăm butonul de NU ca să fie mai greu de apăsat
+                // Crește dimensiunea pentru click-urile următoare
+                paSize += 150; 
+
+                // Face butonul de NU să se micșoreze drastic
                 let noBtn = document.getElementById('noBtn');
                 let currentSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-                if (currentSize > 5) {
-                    noBtn.style.fontSize = (currentSize - 2) + "px";
+                if (currentSize > 2) {
+                    noBtn.style.fontSize = (currentSize - 3) + "px";
                     noBtn.style.padding = (currentSize / 2) + "px";
                 }
             }
