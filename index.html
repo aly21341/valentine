@@ -22,7 +22,7 @@
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 10; /* Containerul stă deasupra textului PA */
+            z-index: 10;
         }
         h1 { color: #d63384; font-size: 2.5rem; }
         .buttons { margin-top: 30px; }
@@ -44,42 +44,27 @@
             font-weight: bold;
             color: #d63384;
             min-height: 40px;
+            /* Tranziție fină pentru creșterea textului */
+            transition: font-size 0.2s ease-in-out; 
+            word-wrap: break-word;
         }
 
-        /* GIF-urile de final */
         .bg-gif {
             position: fixed;
             top: 50%;
             transform: translateY(-50%);
             width: 250px;
-            z-index: 15; /* GIF-urile apar peste tot la final */
+            z-index: 15;
             display: none;
         }
         #gif-stanga { left: 5%; }
         #gif-dreapta { right: 5%; }
-
-        /* Stil pentru PA - Acum mult mai vizibil */
-        #pa-overlay {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ff0000; /* Roșu aprins */
-            font-weight: 900;
-            z-index: 1; /* Stă în spatele cutiei albe, dar peste fundalul roz */
-            pointer-events: none;
-            text-transform: uppercase;
-            opacity: 0.8;
-            line-height: 1;
-        }
     </style>
 </head>
 <body>
 
     <img src="cat.gif" id="gif-stanga" class="bg-gif">
     <img src="cat-heart.gif" id="gif-dreapta" class="bg-gif">
-
-    <div id="pa-overlay"></div>
 
     <div class="container">
         <div id="main-content">
@@ -94,13 +79,14 @@
 
     <script>
         let contorNu = 0;
-        let paSize = 150; // Începe direct de la o dimensiune mare
+        let messageFontSize = 1.5; // Dimensiunea inițială în rem
 
         function raspunsDa() {
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
-            document.getElementById('message').innerText = "14.02.2026 ora 19:00 să fii la poartă!";
-            document.getElementById('message').style.color = "#d63384";
-            document.getElementById('pa-overlay').innerText = ""; 
+            let msg = document.getElementById('message');
+            msg.innerText = "14.02.2026 ora 19:00 să fii la poartă!";
+            msg.style.color = "#d63384";
+            msg.style.fontSize = "1.5rem"; // Resetăm dimensiunea la DA
 
             document.getElementById('gif-stanga').style.display = "block";
             document.getElementById('gif-dreapta').style.display = "block";
@@ -110,26 +96,25 @@
         function raspunsNu() {
             contorNu++;
             let msg = document.getElementById('message');
-            let paOverlay = document.getElementById('pa-overlay');
 
             if (contorNu === 1) {
                 msg.innerText = "Răspuns greșit! ❌ Încearcă din nou.";
                 msg.style.color = "red";
             } else {
-                // De la a doua apăsare
-                msg.innerText = "AM ZIS PA! ";
-                paOverlay.innerText = "PA";
-                paOverlay.style.fontSize = paSize + "px";
+                // De la a doua apăsare, textul devine PA! și începe să crească
+                msg.innerText = "PA!!!";
+                msg.style.color = "red";
                 
-                // Crește dimensiunea pentru click-urile următoare
-                paSize += 150; 
-
-                // Face butonul de NU să se micșoreze drastic
+                // Creștem dimensiunea textului din mesaj
+                messageFontSize += 2; 
+                msg.style.fontSize = messageFontSize + "rem";
+                
+                // Micșorăm butonul de NU
                 let noBtn = document.getElementById('noBtn');
-                let currentSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-                if (currentSize > 2) {
-                    noBtn.style.fontSize = (currentSize - 3) + "px";
-                    noBtn.style.padding = (currentSize / 2) + "px";
+                let currentBtnSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
+                if (currentBtnSize > 2) {
+                    noBtn.style.fontSize = (currentBtnSize - 3) + "px";
+                    noBtn.style.padding = (currentBtnSize / 2) + "px";
                 }
             }
         }
