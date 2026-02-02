@@ -29,17 +29,24 @@
             align-items: center;
         }
         h1 { color: #d63384; font-size: 2rem; margin: 10px 0; }
-        .buttons { margin-top: 20px; }
+        .buttons { 
+            margin-top: 20px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+        }
         button {
             padding: 15px 25px;
             font-size: 1.1rem;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
             margin: 5px;
         }
-        #yesBtn { background-color: #ff4d6d; color: white; }
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 100; }
         #noBtn { background-color: #8a8a8a; color: white; }
         
         #message {
@@ -53,9 +60,9 @@
             max-width: 100%;
         }
 
-        /* GIF-urile - Aranjate sus și jos */
+        /* GIF-urile */
         .bg-gif {
-            width: 150px; /* Dimensiune mai mică pentru mobil */
+            width: 150px;
             height: auto;
             display: none;
             margin: 10px 0;
@@ -68,7 +75,7 @@
         <img src="cat.gif" id="gif-sus" class="bg-gif">
 
         <div id="main-content">
-            <h1>Vrei să fii Valentine-ul meu? ❤️</h1>
+            <h1>Will you be my valentine? ❤️</h1>
             <div class="buttons">
                 <button id="yesBtn" onclick="raspunsDa()">DA</button>
                 <button id="noBtn" onclick="raspunsNu()">NU</button>
@@ -87,11 +94,10 @@
         function raspunsDa() {
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
             let msg = document.getElementById('message');
-            msg.innerText = "14.02.2026 ora 19:00 să fii la poartă!";
+            msg.innerText = "12.02.2026 ora 19:00 să fii la poartă!";
             msg.style.color = "#d63384";
             msg.style.fontSize = "1.3rem";
 
-            // Afișăm GIF-urile (unul sus, unul jos în interiorul containerului)
             document.getElementById('gif-sus').style.display = "block";
             document.getElementById('gif-jos').style.display = "block";
             document.body.style.backgroundColor = "#ffb6c1";
@@ -100,6 +106,8 @@
         function raspunsNu() {
             contorNu++;
             let msg = document.getElementById('message');
+            let yesBtn = document.getElementById('yesBtn');
+            let noBtn = document.getElementById('noBtn');
 
             if (contorNu === 1) {
                 msg.innerText = "Răspuns greșit! ❌ Încearcă din nou.";
@@ -108,14 +116,22 @@
                 msg.innerText = "PA!!!";
                 msg.style.color = "red";
                 
-                messageFontSize += 1.5; 
+                // 1. Creștem textul de eroare "PA!!!"
+                messageFontSize += 1.2; 
                 msg.style.fontSize = messageFontSize + "rem";
                 
-                let noBtn = document.getElementById('noBtn');
-                let currentBtnSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-                if (currentBtnSize > 4) {
-                    noBtn.style.fontSize = (currentBtnSize - 2) + "px";
-                    noBtn.style.padding = (currentBtnSize / 2) + "px";
+                // 2. Mărim butonul de DA
+                let currentYesFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+                let currentYesPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
+                
+                yesBtn.style.fontSize = (currentYesFontSize + 15) + "px";
+                yesBtn.style.padding = (currentYesPadding + 8) + "px";
+
+                // 3. Micșorăm butonul de NU (până la o limită)
+                let currentNoFontSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
+                if (currentNoFontSize > 5) {
+                    noBtn.style.fontSize = (currentNoFontSize - 2) + "px";
+                    noBtn.style.padding = (parseFloat(window.getComputedStyle(noBtn).padding) - 2) + "px";
                 }
             }
         }
