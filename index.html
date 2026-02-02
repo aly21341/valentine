@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surpriză!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body {
             display: flex;
@@ -15,30 +16,56 @@
             font-family: 'Arial', sans-serif;
             text-align: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        /* Stil pentru fundalul cu stele */
+        #stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: none; /* Apare doar la întrebare */
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle 1.5s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
         /* Stil pentru textul de intro */
         #intro-container {
             position: absolute;
-            width: 80%;
+            width: 85%;
             font-size: 1.8rem;
             color: #d63384;
             font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            z-index: 20;
         }
 
         .fade-text {
             opacity: 0;
             position: absolute;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 0.8s ease-in-out;
+            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        /* Containerul principal (ascuns la început) */
+        /* Containerul principal */
         .container {
-            display: none; /* Se activează din JS */
-            background: white;
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
@@ -51,7 +78,7 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
+            from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
 
@@ -67,7 +94,7 @@
             transition: all 0.2s ease;
         }
 
-        #yesBtn { background-color: #ff4d6d; color: white; z-index: 100; }
+        #yesBtn { background-color: #ff4d6d; color: white; z-index: 100; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3); }
         #noBtn { background-color: #8a8a8a; color: white; }
         
         #message {
@@ -76,18 +103,22 @@
             font-weight: bold;
             color: #d63384;
             min-height: 40px;
-            word-wrap: break-word;
         }
 
-        .bg-gif { width: 150px; height: auto; display: none; margin: 10px 0; }
+        .bg-gif { width: 140px; height: auto; display: none; margin: 10px 0; }
     </style>
 </head>
 <body>
 
+    <div id="stars-container"></div>
+
     <div id="intro-container">
         <div id="text1" class="fade-text">Yay, a intrat micuța de tine! ✨</div>
-        <div id="text2" class="fade-text">Să știi că tot timpul o să fii micuța mea și o să te enervez până nu mai poți... 😜</div>
-        <div id="text3" class="fade-text">Acum urmează ceva important, să te pregătești! ❤️</div>
+        <div id="text2" class="fade-text">Să știi că tot timpul o să fii micuța mea și o să te enervez până nu mai poți(si esti si good girl pe langa)</div>
+        <div id="text3" class="fade-text">Acum urmează ceva important, pregateste te </div>
+        <div id="text4" class="fade-text">Te-ai pregătit? </div>
+        <div id="text5" class="fade-text">Minți, eu zic că nu ești pregătită 🙄</div>
+        <div id="text6" class="fade-text">Suspans ca nu am mai facut de mult timp 🥁🥁🥁</div>
     </div>
 
     <div class="container" id="main-card">
@@ -104,53 +135,76 @@
     </div>
 
     <script>
-        // --- LOGICA PENTRU INTRO ---
+        // --- CREARE STELE ---
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 4 + 2 + "px";
+                star.style.width = size;
+                star.style.height = size;
+                star.style.top = Math.random() * 100 + "%";
+                star.style.left = Math.random() * 100 + "%";
+                star.style.animationDelay = Math.random() * 2 + "s";
+                container.appendChild(star);
+            }
+        }
+
+        // --- LOGICA INTRO ---
         const texts = [
-            document.getElementById('text1'),
-            document.getElementById('text2'),
-            document.getElementById('text3')
+            document.getElementById('text1'), document.getElementById('text2'),
+            document.getElementById('text3'), document.getElementById('text4'),
+            document.getElementById('text5'), document.getElementById('text6')
         ];
         
         let currentTextIndex = 0;
 
         function showNextText() {
             if (currentTextIndex < texts.length) {
-                // Fade In
                 texts[currentTextIndex].style.opacity = "1";
-                
-                // După 2.5 secunde, face Fade Out
                 setTimeout(() => {
                     texts[currentTextIndex].style.opacity = "0";
                     currentTextIndex++;
-                    // Așteptăm să se termine fade-out-ul înainte de următorul text
-                    setTimeout(showNextText, 1000);
-                }, 2500);
+                    setTimeout(showNextText, 900);
+                }, 2200);
             } else {
-                // Afișăm cardul principal
                 document.getElementById('intro-container').style.display = "none";
+                document.getElementById('stars-container').style.display = "block";
                 document.getElementById('main-card').style.display = "flex";
+                createStars();
             }
         }
 
-        // Pornim secvența la încărcarea paginii
-        window.onload = () => {
-            setTimeout(showNextText, 500);
-        };
+        window.onload = () => { setTimeout(showNextText, 500); };
 
-        // --- LOGICA PENTRU BUTOANE ---
+        // --- LOGICA BUTOANE ---
         let contorNu = 0;
         let messageFontSize = 1.3;
 
         function raspunsDa() {
+            // Explozie de confetti!
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff4d6d', '#ffb6c1', '#ffffff', '#d63384']
+            });
+
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
             let msg = document.getElementById('message');
             msg.innerText = "14.02.2026 ora 19:00 să fii la poartă!";
             msg.style.color = "#d63384";
-            msg.style.fontSize = "1.3rem";
+            msg.style.fontSize = "1.5rem";
 
             document.getElementById('gif-sus').style.display = "block";
             document.getElementById('gif-jos').style.display = "block";
             document.body.style.backgroundColor = "#ffb6c1";
+            
+            // Repetăm confetti după un mic delay pentru efect wow
+            setTimeout(() => {
+                confetti({ particleCount: 100, spread: 100, origin: { y: 0.8 } });
+            }, 500);
         }
 
         function raspunsNu() {
@@ -165,17 +219,16 @@
             } else {
                 msg.innerText = "PA!!!";
                 msg.style.color = "red";
-                
                 messageFontSize += 1.2; 
                 msg.style.fontSize = messageFontSize + "rem";
                 
-                // Mărim butonul DA
+                // DA crește mare
                 let currentYesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
                 let currentYesPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
-                yesBtn.style.fontSize = (currentYesSize + 20) + "px";
+                yesBtn.style.fontSize = (currentYesSize + 25) + "px";
                 yesBtn.style.padding = (currentYesPadding + 10) + "px";
 
-                // Micșorăm butonul NU
+                // NU se micșorează
                 let currentNoSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
                 if (currentNoSize > 5) {
                     noBtn.style.fontSize = (currentNoSize - 2) + "px";
