@@ -120,14 +120,15 @@
     <div id="hearts-container"></div>
 
     <div id="intro-container">
-        <div id="text1" class="fade-text">Yay, a intrat micuța de tine! ✨</div>
-        <div id="text2" class="fade-text">Să știi că tot timpul o să fii micuța mea și o să te enervez până nu mai poți (și ești și good girl)</div>
-        <div id="text3" class="fade-text">Acum urmează ceva important, așază-te ca să nu te dau pe spate ❤️</div>
-        <div id="text4" class="fade-text">Te-ai pregătit? 🤔</div>
-        <div id="text5" class="fade-text">Minți, eu zic că nu ești pregătită 🙄</div>
-        <div id="text6" class="fade-text">Suspans 🥁🥁🥁</div>
+        <div id="text1" class="fade-text">yay, a intrat micuța de tine ✨</div>
+        <div id="text2" class="fade-text">să știi că tot timpul o să fii micuța mea și o să te enervez până nu mai poți (și ești și good girl)</div>
+        <div id="text3" class="fade-text">acum urmează ceva important, așază-te ca să nu te dau pe spate </div>
+        <div id="text4" class="fade-text">te ai pregătit? </div>
+        <div id="text5" class="fade-text">minți, eu zic că nu ești pregătită 🙄</div>
+        <div id="text6" class="fade-text">suspans 🥁🥁🥁</div>
         <div id="text7" class="fade-text">hahahaha 🥁🥁🥁</div>
-        <div id="text8" class="fade-text">😁😁😁😁</div>
+        <div id="text8" class="fade-text">bine, gata hai ca nu te mai tin</div>
+        <div id="text9" class="fade-text">nvm te mai tin putin 😁😁😁</div>
     </div>
 
     <div id="envelope-wrapper" onclick="openCard()">
@@ -174,7 +175,7 @@
             setTimeout(() => heart.remove(), 4000);
         }, 700);
 
-        // --- INTRO REPARAT (Toate cele 8 texte) ---
+        // --- INTRO ACTUALIZAT ---
         const texts = [
             document.getElementById('text1'), 
             document.getElementById('text2'), 
@@ -183,18 +184,23 @@
             document.getElementById('text5'), 
             document.getElementById('text6'),
             document.getElementById('text7'),
-            document.getElementById('text8')
+            document.getElementById('text8'),
+            document.getElementById('text9')
         ];
         let idx = 0;
 
         function showNext() {
             if (idx < texts.length) {
                 texts[idx].style.opacity = "1";
+                
+                // Setăm durata: 5 secunde pentru ultimul text (text9), 2.2 secunde pentru restul
+                let durataAfisare = (idx === texts.length - 1) ? 5000 : 2200;
+
                 setTimeout(() => {
                     texts[idx].style.opacity = "0";
                     idx++;
                     setTimeout(showNext, 800);
-                }, 2200);
+                }, durataAfisare);
             } else {
                 document.getElementById('intro-container').style.display = "none";
                 document.getElementById('envelope-wrapper').style.display = "flex";
