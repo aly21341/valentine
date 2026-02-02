@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Be my Valentine?</title>
+    <title>Surpriză!</title>
     <style>
         body {
             display: flex;
@@ -16,7 +16,28 @@
             text-align: center;
             overflow: hidden;
         }
+
+        /* Stil pentru textul de intro */
+        #intro-container {
+            position: absolute;
+            width: 80%;
+            font-size: 1.8rem;
+            color: #d63384;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .fade-text {
+            opacity: 0;
+            position: absolute;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Containerul principal (ascuns la început) */
         .container {
+            display: none; /* Se activează din JS */
             background: white;
             padding: 30px;
             border-radius: 20px;
@@ -24,19 +45,19 @@
             position: relative;
             z-index: 10;
             max-width: 90%;
-            display: flex;
             flex-direction: column;
             align-items: center;
+            animation: fadeIn 1.5s forwards;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         h1 { color: #d63384; font-size: 2rem; margin: 10px 0; }
-        .buttons { 
-            margin-top: 20px; 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 10px;
-        }
+        .buttons { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; }
+        
         button {
             padding: 15px 25px;
             font-size: 1.1rem;
@@ -44,8 +65,8 @@
             border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
-            margin: 5px;
         }
+
         #yesBtn { background-color: #ff4d6d; color: white; z-index: 100; }
         #noBtn { background-color: #8a8a8a; color: white; }
         
@@ -55,25 +76,22 @@
             font-weight: bold;
             color: #d63384;
             min-height: 40px;
-            transition: font-size 0.2s ease-in-out; 
             word-wrap: break-word;
-            max-width: 100%;
         }
 
-        /* GIF-urile */
-        .bg-gif {
-            width: 150px;
-            height: auto;
-            display: none;
-            margin: 10px 0;
-        }
+        .bg-gif { width: 150px; height: auto; display: none; margin: 10px 0; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="cat.gif" id="gif-sus" class="bg-gif">
+    <div id="intro-container">
+        <div id="text1" class="fade-text">Yay, a intrat micuța de tine! ✨</div>
+        <div id="text2" class="fade-text">Să știi că tot timpul o să fii micuța mea și o să te enervez până nu mai poți... 😜</div>
+        <div id="text3" class="fade-text">Acum urmează ceva important, să te pregătești! ❤️</div>
+    </div>
 
+    <div class="container" id="main-card">
+        <img src="cat.gif" id="gif-sus" class="bg-gif">
         <div id="main-content">
             <h1>Will you be my valentine? ❤️</h1>
             <div class="buttons">
@@ -81,20 +99,52 @@
                 <button id="noBtn" onclick="raspunsNu()">NU</button>
             </div>
         </div>
-
         <div id="message"></div>
-
         <img src="cat-heart.gif" id="gif-jos" class="bg-gif">
     </div>
 
     <script>
+        // --- LOGICA PENTRU INTRO ---
+        const texts = [
+            document.getElementById('text1'),
+            document.getElementById('text2'),
+            document.getElementById('text3')
+        ];
+        
+        let currentTextIndex = 0;
+
+        function showNextText() {
+            if (currentTextIndex < texts.length) {
+                // Fade In
+                texts[currentTextIndex].style.opacity = "1";
+                
+                // După 2.5 secunde, face Fade Out
+                setTimeout(() => {
+                    texts[currentTextIndex].style.opacity = "0";
+                    currentTextIndex++;
+                    // Așteptăm să se termine fade-out-ul înainte de următorul text
+                    setTimeout(showNextText, 1000);
+                }, 2500);
+            } else {
+                // Afișăm cardul principal
+                document.getElementById('intro-container').style.display = "none";
+                document.getElementById('main-card').style.display = "flex";
+            }
+        }
+
+        // Pornim secvența la încărcarea paginii
+        window.onload = () => {
+            setTimeout(showNextText, 500);
+        };
+
+        // --- LOGICA PENTRU BUTOANE ---
         let contorNu = 0;
         let messageFontSize = 1.3;
 
         function raspunsDa() {
             document.getElementById('main-content').innerHTML = "<h1>GOOD GIRLLLLLL! 🌹</h1>";
             let msg = document.getElementById('message');
-            msg.innerText = "12.02.2026 ora 19:00 să fii la poartă!";
+            msg.innerText = "14.02.2026 ora 19:00 să fii la poartă!";
             msg.style.color = "#d63384";
             msg.style.fontSize = "1.3rem";
 
@@ -116,22 +166,19 @@
                 msg.innerText = "PA!!!";
                 msg.style.color = "red";
                 
-                // 1. Creștem textul de eroare "PA!!!"
                 messageFontSize += 1.2; 
                 msg.style.fontSize = messageFontSize + "rem";
                 
-                // 2. Mărim butonul de DA
-                let currentYesFontSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+                // Mărim butonul DA
+                let currentYesSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
                 let currentYesPadding = parseFloat(window.getComputedStyle(yesBtn).padding);
-                
-                yesBtn.style.fontSize = (currentYesFontSize + 15) + "px";
-                yesBtn.style.padding = (currentYesPadding + 8) + "px";
+                yesBtn.style.fontSize = (currentYesSize + 20) + "px";
+                yesBtn.style.padding = (currentYesPadding + 10) + "px";
 
-                // 3. Micșorăm butonul de NU (până la o limită)
-                let currentNoFontSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
-                if (currentNoFontSize > 5) {
-                    noBtn.style.fontSize = (currentNoFontSize - 2) + "px";
-                    noBtn.style.padding = (parseFloat(window.getComputedStyle(noBtn).padding) - 2) + "px";
+                // Micșorăm butonul NU
+                let currentNoSize = parseFloat(window.getComputedStyle(noBtn).fontSize);
+                if (currentNoSize > 5) {
+                    noBtn.style.fontSize = (currentNoSize - 2) + "px";
                 }
             }
         }
